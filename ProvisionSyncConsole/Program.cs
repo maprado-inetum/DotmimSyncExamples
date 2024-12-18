@@ -83,18 +83,20 @@ internal class Program
             !clientScopesInfoList.Any(si => si.Name == SCOPE_NAME)
             )
         {
-            string tableName = $"js.OnDemandJobs";
+            string schemaName = "js";
+            string tableName = "OnDemandJobs";
+            string complexTableName = $"{schemaName}.{tableName}";
 
             // Tables involved in the sync process:
             var tables = new string[]
             {
-                    tableName
+                    complexTableName
             };
 
             SyncSetup syncSetup = new(tables);
 
             // Filters
-            SetupFilter onDemandJobsFilter = new(tableName, "js");
+            SetupFilter onDemandJobsFilter = new(tableName, schemaName);
 
             onDemandJobsFilter.AddCustomWhere(
                 $"[base].[AssetAlias] = @InstallationAlias " +
@@ -105,7 +107,7 @@ internal class Program
 
             syncSetup.Filters.Add(onDemandJobsFilter);
 
-            syncSetup.Tables[tableName].SyncDirection = SyncDirection.Bidirectional;
+            syncSetup.Tables[complexTableName].SyncDirection = SyncDirection.Bidirectional;
 
             // Provision everything needed by the setup
             ScopeInfo sScopeInfo = await serverOrchestrator.ProvisionAsync(SCOPE_NAME, syncSetup, overwrite: true);
