@@ -94,7 +94,7 @@ internal class Program
             SyncSetup syncSetup = new(tables);
 
             // Filters
-            SetupFilter onDemandJobsFilter = new(tableName);
+            SetupFilter onDemandJobsFilter = new(tableName, "js");
 
             onDemandJobsFilter.AddCustomWhere(
                 $"[base].[AssetAlias] = @InstallationAlias " +
